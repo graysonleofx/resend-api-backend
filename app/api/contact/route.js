@@ -1,13 +1,25 @@
 // Import the Resend SDK
+import Cors from 'cors';
+import initMiddleware from '../init-middleware';
+
 import {Resend} from 'resend';
 const resend = new Resend('process.env.RESEND_API_KEY');
 
-// const resend = new Resend('re_DNNcQTSM_6zMTfZDnVD8Ls8Tn3t9fXXY1');
+const cors = initMiddleware(
+  Cors({
+    origin: ['http://localhost:3000/', 'http://pennywiselogistics.online/'],
+    methods: ['POST', 'GET', 'OPTIONS'],
+  })
+)
 
-export async function POST(req) {
-  // const body = await req.json();
+export default async function POST(req) {
+  // await cors(req, res);
 
-  const {name, email, phone, subject, message} = await req.json;
+  // if(req.methods !== 'POST'){
+  //   return res.status(405).json({message: 'Method not allowed'})
+  // }
+
+  const {name, email, phone, subject, message} = await req.json();
 
   try{
     const data = await resend.emails.send({
@@ -27,13 +39,29 @@ export async function POST(req) {
     })
     console.log('Resend Response', data);
 
-    return Response.json({success: true, data});
+    return new Response(JSON.stringify({success: true, data}), {
+      status: 200,
+      headers:{
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+    });
   }catch(error){
     console.error('Contact email error', error)
-    return Response.json({success: false, error: error.message})
+    return new Response(JSON.stringify({success: false, error: 'Failed to send email'}))
   }
 }
 
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers:{
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin-Method': 'POST, OPTIONS',
+      'Access-Control-Allow-Origin-Header': 'Content-Type',
+    },
+  })
+}
 
 // export async function POST(req) {
 //   const body = await req.json();
