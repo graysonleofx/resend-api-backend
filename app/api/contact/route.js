@@ -12,12 +12,7 @@ const cors = initMiddleware(
   })
 )
 
-export default async function POST(req) {
-  // await cors(req, res);
-
-  // if(req.methods !== 'POST'){
-  //   return res.status(405).json({message: 'Method not allowed'})
-  // }
+export async function POST(req) {
 
   const {name, email, phone, subject, message} = await req.json();
 
@@ -61,6 +56,10 @@ export async function OPTIONS() {
       'Access-Control-Allow-Origin-Header': 'Content-Type',
     },
   })
+}
+
+export async function GET() {
+  return new Response('Contact API is live', {status: 200})
 }
 
 // export async function POST(req) {
