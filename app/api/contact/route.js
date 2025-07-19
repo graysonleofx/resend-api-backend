@@ -12,6 +12,19 @@ const cors = initMiddleware(
   })
 )
 
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  res.setHeader('Access-Control-Allow-Origin-Methods', 'GET, POST, OPTIONS');
+
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if(req.methods === 'OPTIONS'){
+    res.status(200).end();
+    return;
+  }
+}
+
 export async function POST(req) {
 
   const {name, email, phone, subject, message} = await req.json();
