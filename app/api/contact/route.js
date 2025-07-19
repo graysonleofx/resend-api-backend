@@ -7,19 +7,19 @@ const resend = new Resend('process.env.RESEND_API_KEY');
 
 const cors = initMiddleware(
   Cors({
-    origin: ['http://localhost:3000/', 'http://pennywiselogistics.online/'],
+    origin: ['http://localhost:3000/', 'https://pennywiselogistics.online/'],
     methods: ['POST', 'GET', 'OPTIONS'],
   })
 )
 
 export default function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 
-  res.setHeader('Access-Control-Allow-Origin-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Origin-Method', 'GET, POST, OPTIONS');
 
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if(req.methods === 'OPTIONS'){
+  if(req.method === 'OPTIONS'){
     res.status(200).end();
     return;
   }
