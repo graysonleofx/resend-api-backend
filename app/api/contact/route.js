@@ -7,32 +7,32 @@ const resend = new Resend('process.env.RESEND_API_KEY');
 
 const cors = initMiddleware(
   Cors({
-    origin: ['http://localhost:3000/', 'https://pennywiselogistics.online/'],
+    origin: ['http://localhost:3000/', 'https://pennywiselogisties.online/'],
     methods: ['POST', 'GET', 'OPTIONS'],
   })
 )
 
-export default function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+// export default function handler(req, res) {
+//   res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 
-  res.setHeader('Access-Control-Allow-Origin-Method', 'GET, POST, OPTIONS');
+//   res.setHeader('Access-Control-Allow-Origin-Method', 'GET, POST, OPTIONS');
 
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if(req.method === 'OPTIONS'){
-    res.status(200).end();
-    return;
-  }
-}
+//   if(req.method === 'OPTIONS'){
+//     res.status(200).end();
+//     return;
+//   }
+// }
 
 export async function POST(req) {
-
-  const {name, email, phone, subject, message} = await req.json();
-
+  const body = await req.json();
+  
+  const {name, email, phone, subject, message} = body;
   try{
     const data = await resend.emails.send({
       from: email,
-      to: ['contact@pennywiselogistics.online'],
+      to: ['contact@pennywiselogisties.online'],
       subject: subject || 'New Contact Message',
       html: `
         <p><strong>Name:</strong>${name} </p>
@@ -56,7 +56,13 @@ export async function POST(req) {
     });
   }catch(error){
     console.error('Contact email error', error)
-    return new Response(JSON.stringify({success: false, error: 'Failed to send email'}))
+    return new Response(JSON.stringify({success: false, error: 'Failed to send email'}), {
+      status: 500,
+      headers:{
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }
+    })
   }
 }
 

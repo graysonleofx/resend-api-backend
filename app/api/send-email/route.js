@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     // Send the email using Resend
     const data = await resend.emails.send({
-      from: 'PennyWise Logistics <contactus@pennywiselogistics.online>',
+      from: 'PennyWise Logistics <contactus@pennywiselogisties.online>',
       to: email,
       subject: `PennyWise Logistics Order Shipment: #${trackingId}`,
       html: `
